@@ -35,6 +35,8 @@ public class SocialNetworkClient {
             System.out.println("3. Accetta richiesta di amicizia");
             System.out.println("4. Rimuovi amico");
             System.out.println("5. Visualizza amici");
+            System.out.println("6. Invia un messaggio");
+            System.out.println("7. Visualizza messaggi");
             System.out.println("0. Esci");
 
             System.out.print("Scelta: ");
@@ -79,6 +81,23 @@ public class SocialNetworkClient {
                         System.out.println("Amici di " + username + ":");
                         for (String friend : friends) {
                             System.out.println("- " + friend);
+                        }
+                    }
+                    case 6 -> {
+                        System.out.print("Username destinatario: ");
+                        String messageReceiver = scanner.nextLine();
+                        System.out.print("Contenuto del messaggio: ");
+                        String messageContent = scanner.nextLine();
+                        if (socialNetwork.sendMessage(username, messageReceiver, messageContent))
+                            System.out.println("Messaggio inviato.");
+                        else
+                            System.out.println("Impossibile inviare il messaggio. Non hai amici con questo username.");
+                    }
+                    case 7 -> {
+                        List<String> messages = socialNetwork.getMessages(username);
+                        System.out.println("Messaggi per " + username + ":");
+                        for (String message : messages) {
+                            System.out.println("- " + message);
                         }
                     }
                     case 0 -> {
