@@ -37,7 +37,8 @@ public class SocialNetworkClient {
             System.out.println("5. Visualizza amici");
             System.out.println("6. Invia un messaggio");
             System.out.println("7. Visualizza messaggi");
-            System.out.println("0. Esci");
+            System.out.println("8. Cancella tutti i messaggi ricevuti");
+            System.out.println("0. Esci\n\n\n");
 
             System.out.print("Scelta: ");
             int choice = scanner.nextInt();
@@ -100,6 +101,7 @@ public class SocialNetworkClient {
                             System.out.println("- " + message);
                         }
                     }
+                    case 8 -> socialNetwork.deleteAllMessages(username);
                     case 0 -> {
                         System.out.println("Arrivederci!");
                         System.exit(0);

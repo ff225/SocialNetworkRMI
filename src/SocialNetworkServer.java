@@ -9,7 +9,7 @@ import java.util.Map;
 public class SocialNetworkServer extends UnicastRemoteObject implements SocialNetwork {
     private final Map<String, List<String>> friendRequests;
     private final Map<String, List<String>> friends;
-    private Map<String, List<String>> messages;
+    private final Map<String, List<String>> messages;
     private static DataUser ds;
 
     public SocialNetworkServer() throws RemoteException {
@@ -85,6 +85,11 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
     @Override
     public List<String> getMessages(String username) throws RemoteException {
         return messages.getOrDefault(username, new ArrayList<>());
+    }
+
+    @Override
+    public List<String> deleteAllMessages(String username) throws RemoteException {
+        return messages.remove(username);
     }
 
     @Override
