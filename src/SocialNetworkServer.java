@@ -1,23 +1,24 @@
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.Timestamp;
+import java.util.*;
 
 public class SocialNetworkServer extends UnicastRemoteObject implements SocialNetwork {
     private final Map<String, List<String>> friendRequests;
     private final Map<String, List<String>> friends;
     private final Map<String, List<String>> messages;
+
+    private final Map<String, Map<String, List<String>>> posts;
     private static DataUser ds;
 
     public SocialNetworkServer() throws RemoteException {
         friendRequests = new HashMap<>();
         friends = new HashMap<>();
         messages = new HashMap<>();
+        posts = new HashMap<>();
     }
-    
+
     @Override
     public boolean createUser(String username, String pwd) throws RemoteException {
         System.out.println(username + ", " + pwd);
@@ -28,6 +29,7 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
                     friendRequests.put(username, new ArrayList<>());
                     friends.put(username, new ArrayList<>());
                     messages.put(username, new ArrayList<>());
+                    posts.put(username, new HashMap<>());
 
                 }
                 return true;
@@ -103,6 +105,30 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
 
         messages.get(sender).removeIf(prevMsg -> prevMsg.contains(receiver));
         return messages.get(receiver).add(formattedMessage);
+    }
+
+    @Override
+    public void post(String author, String content) throws RemoteException {
+        String uuid = UUID.randomUUID().toString();
+        String post = "postId:" + uuid + "\n" + content;
+        posts.get(author).put(post, new ArrayList<>());
+    }
+
+    @Override
+    public HashMap<String, List<String>> getPosts(String username) throws RemoteException {
+        return (HashMap<String, List<String>>) posts.get(username);
+    }
+
+
+    @Override
+    public void comment(String author, String postAuthor, String uuid, String content) throws RemoteException {
+        String comment = author + ": " + content;
+        for (String post :
+                posts.get(postAuthor).keySet()) {
+            if (post.contains(uuid)) {
+                posts.get(postAuthor).get(post).add(comment);
+            }
+        }
     }
 
     public static void main(String[] args) {
