@@ -16,4 +16,9 @@ public interface SocialNetwork extends Remote {
 
     List<String> getFriends(String username) throws RemoteException;
 
+    List<String> getMessages(String username) throws RemoteException;
+
+    List<String> deleteAllMessages(String username) throws RemoteException;
+
+    boolean sendMessage(String sender, String receiver, String message) throws RemoteException;
 }

@@ -9,13 +9,15 @@ import java.util.Map;
 public class SocialNetworkServer extends UnicastRemoteObject implements SocialNetwork {
     private final Map<String, List<String>> friendRequests;
     private final Map<String, List<String>> friends;
+    private final Map<String, List<String>> messages;
     private static DataUser ds;
 
     public SocialNetworkServer() throws RemoteException {
         friendRequests = new HashMap<>();
         friends = new HashMap<>();
+        messages = new HashMap<>();
     }
-
+    
     @Override
     public boolean createUser(String username, String pwd) throws RemoteException {
         System.out.println(username + ", " + pwd);
@@ -24,6 +26,9 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
             if (u.getNickname().equals(username) && u.getPwd().equals(pwd)) {
                 if (!friendRequests.containsKey(username)) {
                     friendRequests.put(username, new ArrayList<>());
+                    friends.put(username, new ArrayList<>());
+                    messages.put(username, new ArrayList<>());
+
                 }
                 return true;
             }
@@ -57,22 +62,47 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
 
     @Override
     public boolean removeFriend(String sender, String friend) throws RemoteException {
-        if (friends.containsKey(sender) && friends.get(sender).remove(friend)) {
-            return friends.get(friend).remove(sender);
-        }
-        return false;
+
+        return friends.containsKey(sender) && friends.get(sender).remove(friend) && friends.get(friend).remove(sender);
     }
 
 
     @Override
     public List<String> getFriends(String username) throws RemoteException {
         System.out.println(username + ", " + friends.size());
-        return friends.getOrDefault(username, new ArrayList<String>(0));
+        return friends.get(username);
     }
 
     @Override
     public List<String> getPendingFriendRequests(String username) throws RemoteException {
-        return friendRequests.getOrDefault(username, new ArrayList<>());
+        return friendRequests.get(username);
+    }
+
+    @Override
+    public List<String> getMessages(String username) throws RemoteException {
+        return messages.get(username);
+    }
+
+    @Override
+    public List<String> deleteAllMessages(String username) throws RemoteException {
+        return messages.put(username, new ArrayList<>());
+    }
+
+    @Override
+    public boolean sendMessage(String sender, String receiver, String message) throws RemoteException {
+        if (!friends.get(sender).contains(receiver))
+            return false;
+
+        String formattedMessage = sender + ": " + message;
+
+        if (!messages.containsKey(receiver)) {
+            messages.put(receiver, new ArrayList<>());
+        }
+        if (!messages.containsKey(sender))
+            messages.put(sender, new ArrayList<>());
+
+        messages.get(sender).removeIf(prevMsg -> prevMsg.contains(receiver));
+        return messages.get(receiver).add(formattedMessage);
     }
 
     public static void main(String[] args) {
