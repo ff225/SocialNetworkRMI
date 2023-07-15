@@ -7,15 +7,15 @@ import java.util.*;
 public class SocialNetworkServer extends UnicastRemoteObject implements SocialNetwork {
     private final Map<String, List<String>> friendRequests;
     private final Map<String, List<String>> friends;
-    private final Map<String, List<String>> messages;
-
-    private final Map<String, Map<String, List<String>>> posts;
+    private final Map<String, List<Message>> messages;
+    private final Map<String, List<Post>> posts;
     private static DataUser ds;
 
     public SocialNetworkServer() throws RemoteException {
         friendRequests = new HashMap<>();
         friends = new HashMap<>();
         messages = new HashMap<>();
+        //messages = new ArrayList<>();
         posts = new HashMap<>();
     }
 
@@ -28,8 +28,8 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
                 if (!friendRequests.containsKey(username)) {
                     friendRequests.put(username, new ArrayList<>());
                     friends.put(username, new ArrayList<>());
-                    messages.put(username, new ArrayList<>());
-                    posts.put(username, new HashMap<>());
+                    //messages.put(username, new ArrayList<>());
+                    posts.put(username, new ArrayList<>());
 
                 }
                 return true;
@@ -81,13 +81,13 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
     }
 
     @Override
-    public List<String> getMessages(String username) throws RemoteException {
+    public List<Message> getMessages(String username) throws RemoteException {
         return messages.get(username);
     }
 
     @Override
-    public List<String> deleteAllMessages(String username) throws RemoteException {
-        return messages.put(username, new ArrayList<>());
+    public void deleteAllMessages(String username) throws RemoteException {
+        messages.get(username).clear();
     }
 
     @Override
@@ -95,7 +95,9 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
         if (!friends.get(sender).contains(receiver))
             return false;
 
-        String formattedMessage = sender + ": " + message;
+        System.out.println(sender + ": " + message);
+
+        Message newMessage = new Message(sender, receiver, message);
 
         if (!messages.containsKey(receiver)) {
             messages.put(receiver, new ArrayList<>());
@@ -103,30 +105,42 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
         if (!messages.containsKey(sender))
             messages.put(sender, new ArrayList<>());
 
-        messages.get(sender).removeIf(prevMsg -> prevMsg.contains(receiver));
-        return messages.get(receiver).add(formattedMessage);
+        messages.get(sender).removeIf(prevMsg -> prevMsg.getSender().equals(receiver));
+        return messages.get(receiver).add(newMessage);
     }
 
     @Override
     public void post(String author, String content) throws RemoteException {
         String uuid = UUID.randomUUID().toString();
-        String post = "postId:" + uuid + "\n" + content;
-        posts.get(author).put(post, new ArrayList<>());
+        System.out.println("postId:" + uuid + "\n" + content);
+        Post post = new Post(uuid, content);
+        posts.get(author).add(post);
     }
 
     @Override
-    public HashMap<String, List<String>> getPosts(String username) throws RemoteException {
-        return (HashMap<String, List<String>>) posts.get(username);
+    public List<Post> getPosts(String username) throws RemoteException {
+        return posts.get(username);
+    }
+
+    @Override
+    public boolean deletePost(String username, String uuid) throws RemoteException {
+        return posts.get(username).removeIf(post -> post.getPostId().equals(uuid));
+    }
+
+    @Override
+    public void deleteAllPosts(String username) throws RemoteException {
+        posts.get(username).clear();
     }
 
 
     @Override
     public void comment(String author, String postAuthor, String uuid, String content) throws RemoteException {
-        String comment = author + ": " + content;
-        for (String post :
-                posts.get(postAuthor).keySet()) {
-            if (post.contains(uuid)) {
-                posts.get(postAuthor).get(post).add(comment);
+        System.out.println(author + ": " + content);
+        for (Post post : posts.get(postAuthor)) {
+            if (post.getPostId().equals(uuid)) {
+                Comment comment = new Comment(author, content);
+                post.addComment(comment);
+                break;
             }
         }
     }

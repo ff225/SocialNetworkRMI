@@ -17,15 +17,19 @@ public interface SocialNetwork extends Remote {
 
     List<String> getFriends(String username) throws RemoteException;
 
-    List<String> getMessages(String username) throws RemoteException;
+    List<Message> getMessages(String username) throws RemoteException;
 
-    List<String> deleteAllMessages(String username) throws RemoteException;
+    void deleteAllMessages(String username) throws RemoteException;
 
     boolean sendMessage(String sender, String receiver, String message) throws RemoteException;
 
     void post(String author, String content) throws RemoteException;
 
-    HashMap<String, List<String>> getPosts(String username) throws RemoteException;
-    
+    List<Post> getPosts(String username) throws RemoteException;
+
+    boolean deletePost(String username, String uuid) throws RemoteException;
+
+    void deleteAllPosts(String username) throws RemoteException;
+
     void comment(String author, String postAuthor, String uuid, String content) throws RemoteException;
 }

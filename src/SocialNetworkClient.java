@@ -1,6 +1,5 @@
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,9 +38,11 @@ public class SocialNetworkClient {
             System.out.println("7. Visualizza messaggi");
             System.out.println("8. Cancella tutti i messaggi ricevuti");
             System.out.println("9. Scrivi un post");
-            System.out.println("10. Visualizza  i tuoi post");
-            System.out.println("11. Visualizza  i post dei tuoi amici");
-            System.out.println("12. Commenta un post");
+            System.out.println("10. Cancella un post");
+            System.out.println("11. Cancella tutti i post");
+            System.out.println("12. Visualizza  i tuoi post");
+            System.out.println("13. Visualizza  i post dei tuoi amici");
+            System.out.println("14. Commenta un post");
             System.out.println("0. Esci\n\n\n");
 
             System.out.print("Scelta: ");
@@ -97,10 +98,10 @@ public class SocialNetworkClient {
                         else System.out.println("Impossibile inviare il messaggio. Non hai amici con questo username.");
                     }
                     case 7 -> {
-                        List<String> messages = socialNetwork.getMessages(username);
+                        List<Message> messages = socialNetwork.getMessages(username);
                         System.out.println("Messaggi per " + username + ":");
-                        for (String message : messages) {
-                            System.out.println("- " + message);
+                        for (Message message : messages) {
+                            System.out.println(message.toString());
                         }
                     }
                     case 8 -> socialNetwork.deleteAllMessages(username);
@@ -111,48 +112,48 @@ public class SocialNetworkClient {
                         System.out.println("Post pubblicato.");
                     }
                     case 10 -> {
-                        HashMap<String, List<String>> posts = socialNetwork.getPosts(username);
-                        System.out.println("Post di " + username + ":");
-                        for (String post : posts.keySet()) {
-                            System.out.println(post);
-                            if (!posts.get(post).isEmpty())
-                                for (String comment :
-                                        posts.get(post)) {
-                                    System.out.println("commento: " + comment);
-                                }
-
-
-                        }
+                        printPost(username);
+                        System.out.print("Post id: ");
+                        String uuid = scanner.nextLine();
+                        if (socialNetwork.deletePost(username, uuid))
+                            System.out.println("Post id: " + uuid + " cancellato");
+                        else
+                            System.out.println("Post non trovato...");
                     }
                     case 11 -> {
+                        socialNetwork.deleteAllPosts(username);
+                    }
+                    case 12 -> {
+                        printPost(username);
+                    }
+                    case 13 -> {
                         System.out.print("Username: ");
                         String usernameFriend = scanner.nextLine();
                         List<String> friends = socialNetwork.getFriends(username);
                         if (friends.contains(usernameFriend)) {
-                            HashMap<String, List<String>> posts = socialNetwork.getPosts(usernameFriend);
-                            System.out.println("Post di " + usernameFriend + ":");
-                            for (String post : posts.keySet()) {
-                                System.out.println(post);
-                                if (!posts.get(post).isEmpty())
-                                    for (String comment :
-                                            posts.get(post)) {
-                                        System.out.println("commento: " + comment);
-                                    }
-                                }
+                            printPost(usernameFriend);
                         } else
                             System.out.println("Non hai amici con questo username.");
                     }
-                    case 12 -> {
+                    case 14 -> {
                         System.out.print("Autore del post: ");
                         String postAuthor = scanner.nextLine();
                         List<String> friends = socialNetwork.getFriends(username);
                         if (postAuthor.equals(username) || friends.contains(postAuthor)) {
+                            printPost(postAuthor);
+                            List<Post> posts = socialNetwork.getPosts(postAuthor);
                             System.out.print("Post id: ");
                             String uuid = scanner.nextLine();
-                            System.out.print("Contenuto del commento: ");
-                            String commentContent = scanner.nextLine();
-                            socialNetwork.comment(username, postAuthor, uuid, commentContent);
-                            System.out.println("Commento pubblicato.");
+                            for (Post post : posts) {
+                                if (post.getPostId().equals(uuid)) {
+                                    System.out.print("Contenuto del commento: ");
+                                    String commentContent = scanner.nextLine();
+                                    socialNetwork.comment(username, postAuthor, uuid, commentContent);
+                                    System.out.println("Commento pubblicato.");
+                                    break;
+                                }
+                            }
+                            System.out.println("Post non trovato");
                         } else
                             System.out.println("Autore non trovato");
                     }
@@ -165,6 +166,20 @@ public class SocialNetworkClient {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void printPost(String username) throws RemoteException {
+        List<Post> posts = socialNetwork.getPosts(username);
+        System.out.println("Post di " + username + ":");
+        for (Post post : posts) {
+            System.out.println(post.toString());
+            if (!post.getComments().isEmpty()) {
+                System.out.println("Commenti: ");
+                for (Comment comment : post.getComments())
+                    System.out.println(comment.toString());
+            }
+            System.out.println();
         }
     }
 
