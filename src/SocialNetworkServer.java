@@ -1,7 +1,6 @@
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.Timestamp;
 import java.util.*;
 
 public class SocialNetworkServer extends UnicastRemoteObject implements SocialNetwork {

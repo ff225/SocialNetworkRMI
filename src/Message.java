@@ -4,9 +4,9 @@ import java.io.Serializable;
 public class Message implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private String sender;
-    private String receiver;
-    private String content;
+    private final String sender;
+    private final String receiver;
+    private final String content;
 
     public Message(String sender, String receiver, String content) {
         this.sender = sender;
