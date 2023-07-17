@@ -31,7 +31,7 @@ public class SocialNetworkClient {
             System.out.println("\nOpzioni:");
             System.out.println("1. Invia richiesta di amicizia");
             System.out.println("2. Richieste di amicizia");
-            System.out.println("3. Accetta richiesta di amicizia");
+            System.out.println("3. Gestisci richiesta di amicizia");
             System.out.println("4. Rimuovi amico");
             System.out.println("5. Visualizza amici");
             System.out.println("6. Invia un messaggio");
@@ -69,8 +69,16 @@ public class SocialNetworkClient {
                     case 3 -> {
                         System.out.print("Username mittente: ");
                         String sender = scanner.nextLine();
-                        socialNetwork.acceptFriendRequest(sender, username);
-                        System.out.println("Richiesta di amicizia accettata.");
+                        System.out.print("Accetta/rifiuta richiesta (y/n): ");
+                        String manageReq = scanner.nextLine();
+                        if (manageReq.equals("y"))
+                            if (socialNetwork.acceptFriendRequest(sender, username))
+                                System.out.println("Richiesta di amicizia accettata.");
+                            else
+                                System.out.println("Utente non trovato...");
+                        else
+                            socialNetwork.deleteFriendRequest(sender, username);
+
                     }
                     case 4 -> {
                         System.out.print("Username amico da rimuovere: ");
@@ -108,8 +116,10 @@ public class SocialNetworkClient {
                     case 9 -> {
                         System.out.print("Contenuto del post: ");
                         String postContent = scanner.nextLine();
-                        socialNetwork.post(username, postContent);
-                        System.out.println("Post pubblicato.");
+                        if (!postContent.isBlank()) {
+                            socialNetwork.post(username, postContent);
+                            System.out.println("Post pubblicato.");
+                        }
                     }
                     case 10 -> {
                         printPost(username);
@@ -148,12 +158,15 @@ public class SocialNetworkClient {
                                 if (post.getPostId().equals(uuid)) {
                                     System.out.print("Contenuto del commento: ");
                                     String commentContent = scanner.nextLine();
-                                    socialNetwork.comment(username, postAuthor, uuid, commentContent);
-                                    System.out.println("Commento pubblicato.");
+                                    if (!commentContent.isBlank()) {
+                                        socialNetwork.comment(username, postAuthor, uuid, commentContent);
+                                        System.out.println("Commento pubblicato.");
+                                    } else
+                                        System.out.println("Commento non pubblicato");
                                     break;
-                                }
+                                } else
+                                    System.out.println("Post non trovato");
                             }
-                            System.out.println("Post non trovato");
                         } else
                             System.out.println("Autore non trovato");
                     }

@@ -40,11 +40,16 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
 
     @Override
     public boolean sendFriendRequest(String sender, String receiver) throws RemoteException {
-        return !sender.equals(receiver) && friendRequests.containsKey(receiver) && friendRequests.get(receiver).add(sender);
+        return !sender.equals(receiver)
+                && !friends.get(sender).contains(receiver)
+                && !friendRequests.get(sender).contains(receiver)
+                && friendRequests.containsKey(receiver)
+                && !friendRequests.get(receiver).contains(sender)
+                && friendRequests.get(receiver).add(sender);
     }
 
     @Override
-    public void acceptFriendRequest(String sender, String receiver) throws RemoteException {
+    public boolean acceptFriendRequest(String sender, String receiver) throws RemoteException {
         if (friendRequests.containsKey(receiver) && friendRequests.get(receiver).contains(sender)) {
             friendRequests.get(receiver).remove(sender);
 
@@ -58,8 +63,15 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
             if (!friends.containsKey(sender)) {
                 friends.put(sender, new ArrayList<>());
             }
-            friends.get(sender).add(receiver);
+            return friends.get(sender).add(receiver);
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteFriendRequest(String sender, String receiver) throws RemoteException {
+        return friendRequests.get(receiver).removeIf(user -> user.equals(sender));
     }
 
     @Override
@@ -92,8 +104,7 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
 
     @Override
     public boolean sendMessage(String sender, String receiver, String message) throws RemoteException {
-        if (!friends.get(sender).contains(receiver))
-            return false;
+        if (!friends.get(sender).contains(receiver)) return false;
 
         System.out.println(sender + ": " + message);
 
@@ -102,8 +113,7 @@ public class SocialNetworkServer extends UnicastRemoteObject implements SocialNe
         if (!messages.containsKey(receiver)) {
             messages.put(receiver, new ArrayList<>());
         }
-        if (!messages.containsKey(sender))
-            messages.put(sender, new ArrayList<>());
+        if (!messages.containsKey(sender)) messages.put(sender, new ArrayList<>());
 
         messages.get(sender).removeIf(prevMsg -> prevMsg.getSender().equals(receiver));
         return messages.get(receiver).add(newMessage);
