@@ -98,21 +98,21 @@ R18: I commenti devono contenere l'autore del commento e il contenuto testuale.
 R19: I commenti devono essere associati al post corrispondente.  
 R20: Gli utenti devono poter visualizzare i commenti associati a un post.
 
-## Descrizione dell'architettura
+## 4. Descrizione dell'architettura
 
-![](/Users/francescofranco/Desktop/Architettura.png)
+![](img/Architettura.png)
 
 Il sistema di social network è progettato seguendo un'architettura **client-server** che utilizza il protocollo RMI
 (Remote Method Invocation) per la comunicazione tra client e server. L'architettura è suddivisa in due componenti
 principali: il lato client e il lato server.
 
-### Lato Client
+### 4.1 Lato Client
 
 Il lato client rappresenta l'interfaccia utente del sistema di social network. È responsabile per la presentazione dei
 dati e delle funzionalità agli utenti. Il client comunica con il server per richiedere l'esecuzione delle operazioni e
 per ricevere i risultati.
 
-### Lato Server
+### 4.2 Lato Server
 
 Il lato server gestisce tutte le operazioni di elaborazione dei dati e la logica di business del sistema di social
 network. Riceve le richieste dai client, le elabora e restituisce i risultati appropriati.
@@ -123,7 +123,7 @@ informazioni degli utenti, le richieste di amicizia, i messaggi, i post e i comm
 come mappe e liste. Inoltre, il server si occupa della persistenza dei dati utente, che sono memorizzati su un
 file CSV. Durante l'avvio, il server legge il file CSV e carica i dati utente nel sistema.
 
-### Comunicazione tra Client e Server
+### 4.3 Comunicazione tra Client e Server
 
 La comunicazione tra il client e il server avviene utilizzando il protocollo RMI. Il client ottiene un riferimento
 remoto all'oggetto del server tramite il servizio di registrazione RMI. Utilizzando questo riferimento, il client invoca
@@ -137,11 +137,11 @@ diverse in una rete.
 ### Diagramma di sequenza 
 #### Esempio invio richiesta di amicizia
 
-![](/Users/francescofranco/Desktop/SequenzaRichiestaDiAmicizia.png)
+![](img/SequenzaRichiestaDiAmicizia.png)
 
 ### UML
 
-![](/Users/francescofranco/Desktop/uml.png)
+![](img/uml.png)
 
 ## 5. Glossario
 
