@@ -76,8 +76,10 @@ public class SocialNetworkClient {
                                 System.out.println("Richiesta di amicizia accettata.");
                             else
                                 System.out.println("Utente non trovato...");
-                        else
+                        else if (manageReq.equals("n"))
                             socialNetwork.deleteFriendRequest(sender, username);
+                        else
+                            System.out.println("Input errato.");
 
                     }
                     case 4 -> {
