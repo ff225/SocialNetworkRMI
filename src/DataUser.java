@@ -10,7 +10,7 @@ public class DataUser {
 
     public void setUsers() {
         users = new ArrayList<User>();
-        try (BufferedReader br = new BufferedReader(new FileReader("/Users/francescofranco/IdeaProjects/SocialNetwork/users.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("../users.csv"))) {
             String row;
             while ((row = br.readLine()) != null) {
                 String[] values = row.split(",");
