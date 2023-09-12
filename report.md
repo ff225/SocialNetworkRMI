@@ -9,12 +9,12 @@ e completa per gli sviluppatori durante la fase di progettazione e implementazio
 
 ### 1.2 Contesto del sistema
 
-Il sistema di social network permette agli utenti di creare account, gestire le amicizie, inviare messaggi, pubblicare
-post e commentare i post degli amici.
+SocialNetworkRMI permette agli utenti di creare account, gestire le amicizie, inviare messaggi, pubblicare
+post e commentare i propri post e quelli degli amici.
 
 ### 1.3 Scopo del sistema
 
-Il sistema di social network permette agli utenti di interagire tra loro attraverso richieste di amicizia,
+SocialNetworkRMI permette agli utenti di interagire tra loro attraverso richieste di amicizia,
 messaggistica, pubblicazione di post e commenti. Il sistema fornisce una piattaforma online per la connessione e la
 comunicazione tra gli utenti registrati.
 
@@ -22,9 +22,9 @@ comunicazione tra gli utenti registrati.
 
 ### 2.1 Funzionalità del sistema
 
-Il sistema di social network fornisce le seguenti funzionalità principali:
+SocialNetworkRMI fornisce le seguenti funzionalità principali:
 
-1. Accesso al sistema social network:
+1. Accesso al social network:
     - Gli utenti possono accedere al proprio account fornendo il nome utente e password.
 
 2. Gestione delle amicizie:
@@ -33,7 +33,7 @@ Il sistema di social network fornisce le seguenti funzionalità principali:
     - Gli utenti possono rimuovere un amico dalla lista degli amici.
 
 3. Messaggistica:
-    - Gli utenti possono inviare messaggi ad altri utenti nella loro lista di amici.
+    - Gli utenti possono inviare messaggi ad altri utenti appartenenti alla lista di amici.
     - Gli utenti possono visualizzare i messaggi ricevuti.
     - Gli utenti possono cancellare i messaggi ricevuti.
 
@@ -43,12 +43,12 @@ Il sistema di social network fornisce le seguenti funzionalità principali:
     - Gli utenti possono cancellare i propri post.
 
 5. Commenti sui post:
-    - Gli utenti possono commentare i post degli amici.
+    - Gli utenti possono commentare i propri post e quelli degli amici.
     - Gli utenti possono visualizzare i commenti associati a un post.
 
 ### 2.2 Caratteristiche del sistema
 
-Il sistema di social network presenta le seguenti caratteristiche:
+SocialNetworkRMI presenta le seguenti caratteristiche:
 
 - Accesso sicuro: Il sistema garantisce l'accesso sicuro alle informazioni dell'utente tramite autenticazione.
 - Gestione delle amicizie: Gli utenti possono gestire la loro lista di amici attraverso richieste di amicizia e
@@ -79,7 +79,7 @@ R8: Gli utenti devono poter rimuovere un amico dalla lista degli amici.
 
 #### 3.1.3 Messaggistica
 
-R9: Gli utenti devono poter inviare messaggi ad altri utenti nella loro lista di amici.  
+R9: Gli utenti devono poter inviare messaggi ad altri utenti appartententi alla lista di amici.  
 R10: Il sistema deve verificare se l'utente mittente e il destinatario sono amici prima di inviare il messaggio.  
 R11: Gli utenti devono poter visualizzare i messaggi ricevuti.  
 R12: Gli utenti devono poter cancellare i messaggi ricevuti.
@@ -102,20 +102,20 @@ R20: Gli utenti devono poter visualizzare i commenti associati a un post.
 
 ![](img/Architettura.png)
 
-Il sistema di social network è progettato seguendo un'architettura **client-server** che utilizza il protocollo RMI
+SocialNetworkRMI è progettato seguendo un'architettura **client-server** che utilizza il protocollo RMI
 (Remote Method Invocation) per la comunicazione tra client e server. L'architettura è suddivisa in due componenti
 principali: il lato client e il lato server.
 
 ### 4.1 Lato Client
 
-Il lato client rappresenta l'interfaccia utente del sistema di social network. È responsabile per la presentazione dei
+Il lato client rappresenta l'interfaccia utente del sistema. È responsabile per la presentazione dei
 dati e delle funzionalità agli utenti. Il client comunica con il server per richiedere l'esecuzione delle operazioni e
 per ricevere i risultati.
 
 ### 4.2 Lato Server
 
-Il lato server gestisce tutte le operazioni di elaborazione dei dati e la logica di business del sistema di social
-network. Riceve le richieste dai client, le elabora e restituisce i risultati appropriati.
+Il lato server gestisce tutte le operazioni di elaborazione dei dati e la logica di business del social. Riceve le
+richieste dai client, le elabora e restituisce i risultati appropriati.
 
 Il server è implementato come un'applicazione Java che implementa l'interfaccia `SocialNetwork`. Utilizza la
 classe `SocialNetworkServer` che estende `UnicastRemoteObject` per fornire il supporto RMI. Il server mantiene le
@@ -134,7 +134,8 @@ l'operazione richiesta e restituisce i risultati al client. La comunicazione avv
 client e il server fossero eseguiti sulla stessa macchina, anche se in realtà possono essere eseguiti su macchine
 diverse in una rete.
 
-### Diagramma di sequenza 
+### Diagramma di sequenza
+
 #### Esempio invio richiesta di amicizia
 
 ![](img/SequenzaRichiestaDiAmicizia.png)
@@ -145,8 +146,7 @@ diverse in una rete.
 
 ## 5. Glossario
 
-- Account: Rappresenta l'identità di un utente nel sistema di social network.
+- Account: Rappresenta l'identità di un utente nel sistema.
 - Amicizia: Rappresenta la connessione tra due utenti che hanno accettato reciprocamente una richiesta di amicizia.
 - Messaggio: Rappresenta una comunicazione testuale inviata da un utente a un altro utente nel sistema.
 - Post: Rappresenta un messaggio pubblico condiviso da un utente sul proprio profilo.
-- Commento: Rappresenta un commento associato a un post, scritto da un utente.
